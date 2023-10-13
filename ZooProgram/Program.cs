@@ -73,7 +73,6 @@ namespace ZooProgram
         public Zoo()
         {
             _animalList.Add(new Lemur(_random));
-            _animalList.Add(new Chameleon(_random));
             _animalList.Add(new Caracal(_random));
             _animalList.Add(new Panda(_random));
             _animalList.Add(new Raccoon(_random));
@@ -122,9 +121,9 @@ namespace ZooProgram
 
         public void  ShowInfo()
         {
-            Console.WriteLine($"Имя - {Name}" +
+            Console.WriteLine($"Имя - {Name}\n" +
                               $"{AnimalSound}\n" +
-                              $" {Gender}");
+                              $" {Gender}\n");
         }
 
         public virtual string GetRandomGender(Random random)
@@ -154,7 +153,7 @@ namespace ZooProgram
         public Lemur(Random random) : base(random) 
         {
             Name = "Лемур";
-            AnimalSound = "мяу";
+            AnimalSound = "кричит";
             Gender = GetRandomGender(random);
         }
 
@@ -164,27 +163,12 @@ namespace ZooProgram
         }
     }
 
-    class Chameleon : Animal
-    {
-        public Chameleon(Random random) : base(random)
-        {
-            Name = "Хамелеон";
-            AnimalSound = " ";
-            Gender = GetRandomGender(random);
-        }
-
-        public override string GetRandomGender(Random random)
-        {
-            return base.GetRandomGender(random);   
-        }
-    }
-
     class Caracal : Animal
     {
         public Caracal(Random random) : base(random) 
         {
             Name = "Каракал";
-            AnimalSound = "Мяу";
+            AnimalSound = "мяукает";
             Gender= GetRandomGender(random);
         }
 
@@ -199,7 +183,7 @@ namespace ZooProgram
         public Panda(Random random) : base(random) 
         {
             Name = "Панда";
-            AnimalSound = " ";
+            AnimalSound = "звуки панды";
             Gender = GetRandomGender(random);
         }
 
@@ -214,7 +198,7 @@ namespace ZooProgram
         public Raccoon(Random random) : base(random)
         {
             Name = "Енот";
-            AnimalSound = " ";
+            AnimalSound = "звуки енота";
             Gender = GetRandomGender(random);
         }
 
