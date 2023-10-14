@@ -7,15 +7,15 @@ namespace ZooProgram
     {
         static void Main(string[] args)
         {
-            Menu menu = new Menu();
+            Zoo menu = new Zoo();
 
             menu.DisplayInfo();
         }
     }
 
-    class Menu
+    class Zoo
     {
-        private static Zoo _zoo = new Zoo();
+        private Aviary _zoo = new Aviary();
 
         public void DisplayInfo()
         {
@@ -39,7 +39,7 @@ namespace ZooProgram
                     case ChooseAviaryCommand:
                         InputText();
                         break;
-                        
+
                     default:
                         Console.WriteLine();
                         break;
@@ -65,17 +65,18 @@ namespace ZooProgram
         }
     }
 
-    class Zoo
+    class Aviary
     {
         private List<Animal> _animalList = new List<Animal>();
+
         private Random _random = new Random();
 
-        public Zoo()
+        public Aviary()
         {
-            _animalList.Add(new Lemur(_random));
-            _animalList.Add(new Caracal(_random));
-            _animalList.Add(new Panda(_random));
-            _animalList.Add(new Raccoon(_random));
+            _animalList.Add(new Lemur(GetRandomGender()));
+            _animalList.Add(new Caracal(GetRandomGender()));
+            _animalList.Add(new Panda(GetRandomGender()));
+            _animalList.Add(new Raccoon(GetRandomGender()));
         }
 
         public void ShowInfo()
@@ -96,115 +97,80 @@ namespace ZooProgram
                     _animalList[aviaryNumber - 1].ShowInfo();
                 }
             }
-            else  
+            else
             {
                 Console.WriteLine("Вольера с таким номером нет.");
             }
+        }
+
+        public virtual string GetRandomGender()
+        {
+            string female = "Женский";
+            string male = "Мужской";
+
+            string[] genders = new string[] { female, male };
+
+            int randomNumber = _random.Next(2);
+
+            return genders[randomNumber];
         }
     }
 
     class Animal
     {
-        private Random _random = new Random();
-
-        public Animal(Random random)
+        public Animal(string gender)
         {
-            _random = random;
+            Gender = gender;
         }
 
         public string Name { get; protected set; }
-        public string AnimalSound { get; protected set; }
-        public int Count { get; protected set; }
+        public string Sound { get; protected set; }
         public string Gender { get; protected set; }
+        public int Count { get; private set; }
 
-        public virtual Animal Create() => new Animal(_random) { };
+        public virtual Animal Create() => new Animal(Gender) { };
 
-        public void  ShowInfo()
+        public void ShowInfo()
         {
             Console.WriteLine($"Имя - {Name}\n" +
-                              $"{AnimalSound}\n" +
+                              $"{Sound}\n" +
                               $" {Gender}\n");
-        }
-
-        public virtual string GetRandomGender(Random random)
-        {
-            string female = "Женский";
-            string male = "Мужской";
-
-            int randomNumber = random.Next(2);
-
-            if (randomNumber == 0)
-            {
-                return female;
-            }
-            else if(randomNumber == 1)
-            {
-                return male;
-            }
-            else
-            {
-                return null;
-            }
         }
     }
 
     class Lemur : Animal
     {
-        public Lemur(Random random) : base(random) 
+        public Lemur(string gender) : base(gender) 
         {
-            Name = "Лемур";
-            AnimalSound = "кричит";
-            Gender = GetRandomGender(random);
-        }
-
-        public override string GetRandomGender(Random random)
-        {
-            return base.GetRandomGender(random);
+            Name = "Лемур"; 
+            Sound = "*звуки Лемура.";
         }
     }
 
     class Caracal : Animal
     {
-        public Caracal(Random random) : base(random) 
+        public Caracal(string gender) : base(gender) 
         {
             Name = "Каракал";
-            AnimalSound = "мяукает";
-            Gender= GetRandomGender(random);
-        }
-
-        public override string GetRandomGender(Random random)
-        {
-            return base.GetRandomGender(random);   
+            Sound = "*мяукает*";
         }
     }
 
     class Panda : Animal
     {
-        public Panda(Random random) : base(random) 
+        public Panda(string gender) : base(gender) 
         {
             Name = "Панда";
-            AnimalSound = "звуки панды";
-            Gender = GetRandomGender(random);
-        }
-
-        public override string GetRandomGender(Random random)
-        {
-            return base.GetRandomGender(random);
+            Sound = "*звуки панды*";
         }
     }
 
     class Raccoon : Animal
     {
-        public Raccoon(Random random) : base(random)
+        public Raccoon(string gender) : base(gender)
         {
             Name = "Енот";
-            AnimalSound = "звуки енота";
-            Gender = GetRandomGender(random);
-        }
-
-        public override string GetRandomGender(Random random)
-        {
-            return base.GetRandomGender(random);
+            Sound = "*звуки енота*";
         }
     }
 }
