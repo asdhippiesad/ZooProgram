@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace ZooProgram
 {
@@ -7,15 +9,15 @@ namespace ZooProgram
     {
         static void Main(string[] args)
         {
-            Zoo menu = new Zoo();
+            Menu menu = new Menu();
 
             menu.DisplayInfo();
         }
     }
 
-    class Zoo
+    class Menu
     {
-        private Aviary _zoo = new Aviary();
+        private Zoo _zoo = new Zoo();
 
         public void DisplayInfo()
         {
@@ -23,21 +25,21 @@ namespace ZooProgram
 
             while (isWoking)
             {
-                const string ShowInfoCommand = "1";
-                const string ChooseAviaryCommand = "2";
+                const string ChooseAviaryCommand = "1";
+                const string ExitCommand = "2";
 
-                Console.WriteLine("Выберите действие: ");
-                Console.WriteLine($"{ShowInfoCommand} -- показать инфорацию.");
+                Console.WriteLine("Добро Пожоваловать в зоопарк: ");
                 Console.WriteLine($"{ChooseAviaryCommand} -- выбрать вольер.");
+                Console.WriteLine($"{ExitCommand} -- выход.");
 
                 switch (Console.ReadLine())
                 {
-                    case ShowInfoCommand:
-                        _zoo.ShowInfo();
-                        break;
-
                     case ChooseAviaryCommand:
                         InputText();
+                        break;
+
+                    case ExitCommand:
+                        isWoking = false;
                         break;
 
                     default:
@@ -56,7 +58,8 @@ namespace ZooProgram
 
             if (int.TryParse(Console.ReadLine(), out int aviaryNumber))
             {
-                _zoo.ShowAvirayInfo(aviaryNumber);
+                Aviary aviary = _zoo.CreateAviary();
+                aviary.ShowInfo();
             }
             else
             {
@@ -65,45 +68,61 @@ namespace ZooProgram
         }
     }
 
-    class Aviary
+    class Zoo
     {
-        private List<Animal> _animalList = new List<Animal>();
-
+        private List<Aviary> _aviaries = new List<Aviary>();
         private Random _random = new Random();
 
-        public Aviary()
+        public Zoo()
         {
-            _animalList.Add(new Lemur(GetRandomGender()));
-            _animalList.Add(new Caracal(GetRandomGender()));
-            _animalList.Add(new Panda(GetRandomGender()));
-            _animalList.Add(new Raccoon(GetRandomGender()));
+            _aviaries.Add(CreateAviary());
         }
 
-        public void ShowInfo()
+        public Aviary CreateAviary()
         {
-            foreach (Animal animal in _animalList)
+            int minCount = 1;
+            int maxCount = 10;
+
+            Aviary aviary = new Aviary();
+            int animalCount = _random.Next(minCount, maxCount);
+
+            for (int i = 0; i < animalCount; i++)
             {
-                Console.Write("Животные в вольере: ");
-                animal.ShowInfo();
+                Animal randomAnimal = GetRandomAnimal();
+                aviary.AddAnimal(randomAnimal);
+            }
+
+            return aviary;
+        }
+
+        private Animal GetRandomAnimal()
+        {
+            const int OneMenu = 1;
+            const int TwoMenu = 2;
+            const int ThreeMenu = 3;
+            const int EvenMenu = 4;
+
+            int minCount = 1;
+            int maxCount = 5;
+
+            int randomIndex = _random.Next(minCount, maxCount);
+
+            switch (randomIndex)
+            {
+                case OneMenu:
+                    return new Lemur(GetRandomGender());
+                case TwoMenu:
+                    return new Caracal(GetRandomGender());
+                case ThreeMenu:
+                    return new Panda(GetRandomGender());
+                case EvenMenu:
+                    return new Raccoon(GetRandomGender());
+                default:
+                    return new Lemur(GetRandomGender());
             }
         }
 
-        public void ShowAvirayInfo(int aviaryNumber)
-        {
-            if (aviaryNumber >= 1 && aviaryNumber <= _animalList.Count)
-            {
-                for (int i = 0; i < _animalList.Count; i++)
-                {
-                    _animalList[aviaryNumber - 1].ShowInfo();
-                }
-            }
-            else
-            {
-                Console.WriteLine("Вольера с таким номером нет.");
-            }
-        }
-
-        public virtual string GetRandomGender()
+        private string GetRandomGender()
         {
             string female = "Женский";
             string male = "Мужской";
@@ -113,6 +132,25 @@ namespace ZooProgram
             int randomNumber = _random.Next(2);
 
             return genders[randomNumber];
+        }
+    }
+
+    class Aviary
+    {
+        private List<Animal> _animalList = new List<Animal>();
+
+        public void AddAnimal(Animal animal)
+        {
+            _animalList.Add(animal);
+        }
+
+        public void ShowInfo()
+        {
+            foreach (Animal animal in _animalList)
+            {
+                Console.Write("Животные в вольере: ");
+                animal.ShowInfo();
+            }
         }
     }
 
@@ -126,9 +164,6 @@ namespace ZooProgram
         public string Name { get; protected set; }
         public string Sound { get; protected set; }
         public string Gender { get; protected set; }
-        public int Count { get; private set; }
-
-        public virtual Animal Create() => new Animal(Gender) { };
 
         public void ShowInfo()
         {
@@ -140,16 +175,16 @@ namespace ZooProgram
 
     class Lemur : Animal
     {
-        public Lemur(string gender) : base(gender) 
+        public Lemur(string gender) : base(gender)
         {
-            Name = "Лемур"; 
+            Name = "Лемур";
             Sound = "*звуки Лемура.";
         }
     }
 
     class Caracal : Animal
     {
-        public Caracal(string gender) : base(gender) 
+        public Caracal(string gender) : base(gender)
         {
             Name = "Каракал";
             Sound = "*мяукает*";
@@ -158,7 +193,7 @@ namespace ZooProgram
 
     class Panda : Animal
     {
-        public Panda(string gender) : base(gender) 
+        public Panda(string gender) : base(gender)
         {
             Name = "Панда";
             Sound = "*звуки панды*";
